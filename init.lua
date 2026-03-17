@@ -71,6 +71,31 @@ require("lazy").setup({
   {
     "windwp/nvim-autopairs"
   },
+  {
+  "nvim-lualine/lualine.nvim",
+  dependencies = { "nvim-tree/nvim-web-devicons" },
+  config = function()
+    require("lualine").setup({
+      options = {
+        theme = "auto",
+      },
+      sections = {
+        lualine_c = {
+          {
+            "diagnostics",
+            sources = { "nvim_diagnostic" },
+            symbols = {
+              error = "E:",
+              warn  = "W:",
+              info  = "I:",
+              hint  = "H:",
+            },
+          },
+        },
+      },
+    })
+  end,
+  },
   { 
       "sheerun/vim-polyglot", 
       lazy = false,
@@ -203,6 +228,9 @@ require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp")
 -- NVIM-TREE
 -- =====================================
 require("nvim-tree").setup({
+  filters = {
+    git_ignored = false,
+  },
   on_attach = function(bufnr)
     local api = require("nvim-tree.api")
     api.config.mappings.default_on_attach(bufnr)
@@ -226,7 +254,7 @@ vim.keymap.set("n", "<F8>", ":w<CR>:!g++ % -o test && exit<CR>:qa<CR>", { silent
 vim.keymap.set(
   "n",
   "<F5>",
-  ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g -std=c99 -Wall -Wextra -Wconversion -pedantic % -o test && exit || read<CR>",
+  ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic % -o test && exit || read<CR>",
   { silent = false }
 )
 vim.keymap.set("n", "L", vim.lsp.buf.hover, { noremap = true, silent = true })
@@ -240,4 +268,10 @@ end
 -- Map it to "L"
 vim.keymap.set("n", "L", lsp_hover_silent, { noremap = true, silent = true })
 vim.cmd([[autocmd VimEnter * :silent! redraw!]])
-
+vim.keymap.set("n", "<leader>xx", function()
+  vim.diagnostic.setqflist()
+  vim.cmd("copen")
+end, { silent = true })
+vim.keymap.set("n", "<leader>gi", function()
+  require("nvim-tree.api").tree.toggle_gitignore_filter()
+end, { desc = "Toggle GitIgnore Files in NvimTree", silent = true })
