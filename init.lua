@@ -251,7 +251,7 @@ end)
 -- =====================================
 -- BUILD COMMANDS
 -- =====================================
-vim.keymap.set("n", "<F8>", ":w<CR>:!g++ % -o test && exit<CR>:qa<CR>", { silent = true })
+vim.keymap.set("n", "<F8>", ":w<CR>:!g++ % -o test<CR>", { silent = true })
 vim.keymap.set(
   "n",
   "<F5>",
@@ -280,3 +280,6 @@ end, { desc = "Toggle GitIgnore Files in NvimTree", silent = true })
 -- Map Esc in terminal to exit to normal mode
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 vim.cmd('cnoreabbrev term vsplit \\| term')
+
+vim.keymap.set("n", "$", "g_", { desc = "Last non-blank char" })
+vim.keymap.set("n", "g$", "$", { desc = "Real end of line" })
