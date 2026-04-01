@@ -1,6 +1,3 @@
--- ========================================================================== 
--- POLYGLOT / C-ENHANCED BOOST LINES
--- ==========================================================================
 vim.g.c_syntax_for_h = 1                    -- Treat .h files as C
 vim.g.c_ansi_typedefs = 1                   -- Highlight size_t, atomic_int, etc.
 vim.g.c_ansi_constants = 1                  -- Highlight NULL, EXIT_SUCCESS, etc.
@@ -12,15 +9,9 @@ vim.g.cpp_class_decl_highlight = 1          -- Highlight class names in declarat
 vim.g.cpp_posix_standard = 1                -- Highlight POSIX types
 vim.g.cpp_experimental_template_highlight = 1 -- Better template highlighting
 vim.g.cpp_concepts_highlight = 1            -- C++20 concepts support
--- ==========================================================================
--- =====================================
--- LEADER
--- =====================================
+
 vim.g.mapleader = " "
 
--- =====================================
--- BASIC SETTINGS
--- =====================================
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
@@ -38,9 +29,7 @@ vim.opt.compatible = false
 vim.opt.splitright = true
 vim.o.autoindent = true
 vim.o.smartindent = true
--- =====================================
--- LAZY.NVIM BOOTSTRAP
--- =====================================
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -50,9 +39,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- =====================================
--- PLUGINS
--- =====================================
 require("lazy").setup({
   -- Packer replacement not needed
   {
@@ -133,18 +119,6 @@ require("lazy").setup({
     end,
   },
 
---  {
---    "Mofiqul/vscode.nvim",
---    config = function()
---      vim.g.vscode_style = "dark"
---      vim.cmd([[colorscheme vscode]])
---    end,
---  },
-})
-
--- =====================================
--- LSP CONFIGURATION (C/C++)
--- =====================================
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -166,9 +140,6 @@ vim.api.nvim_create_autocmd({ "BufRead", "BufNewFile" }, {
   command = "setfiletype c",
 })
 
--- =====================================
--- TELESCOPE
--- =====================================
 local telescope = require("telescope")
 local builtin = require("telescope.builtin")
 
@@ -193,9 +164,6 @@ vim.keymap.set("n", "gd", builtin.lsp_definitions)
 vim.keymap.set("n", "gr", builtin.lsp_references)
 vim.keymap.set("n", "gi", builtin.lsp_implementations)
 
--- =====================================
--- CMP (Completion)
--- =====================================
 local cmp = require("cmp")
 local luasnip = require("luasnip")
 
@@ -220,15 +188,9 @@ cmp.setup({
   },
 })
 
--- =====================================
--- AUTOPAIRS
--- =====================================
 require("nvim-autopairs").setup({ map_cr = true, map_bs = true, enable_check_bracket_line = false })
 require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
 
--- =====================================
--- NVIM-TREE
--- =====================================
 require("nvim-tree").setup({
   filters = {
     git_ignored = false,
@@ -242,16 +204,10 @@ require("nvim-tree").setup({
 })
 vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>", { silent = true })
 
--- =====================================
--- DIAGNOSTICS FLOAT
--- =====================================
 vim.keymap.set("n", "K", function()
   vim.diagnostic.open_float(0, { focus = false })
 end)
 
--- =====================================
--- BUILD COMMANDS
--- =====================================
 vim.keymap.set("n", "<F8>", ":w<CR>:!g++ % -o test<CR>", { silent = true })
 vim.keymap.set(
   "n",
@@ -261,13 +217,11 @@ vim.keymap.set(
 )
 vim.keymap.set("n", "L", vim.lsp.buf.hover, { noremap = true, silent = true })
 
--- Function to show LSP hover/info silently without stealing focus
 local function lsp_hover_silent()
     vim.diagnostic.open_float(nil, { focus = false })  -- optional diagnostics
     vim.lsp.buf.hover()                                -- show hover info
 end
 
--- Map it to "L"
 vim.keymap.set("n", "L", lsp_hover_silent, { noremap = true, silent = true })
 vim.cmd([[autocmd VimEnter * :silent! redraw!]])
 vim.keymap.set("n", "<leader>xx", function()
@@ -278,13 +232,12 @@ vim.keymap.set("n", "<leader>gi", function()
   require("nvim-tree.api").tree.toggle_gitignore_filter()
 end, { desc = "Toggle GitIgnore Files in NvimTree", silent = true })
 
--- Map Esc in terminal to exit to normal mode
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
 vim.cmd('cnoreabbrev term vsplit \\| term')
 
 vim.keymap.set("n", "$", "g_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "v$", "vg_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "g$", "$", { desc = "Real end of line" })
--- Visual line mode: make p behave like ]p
+
 vim.keymap.set('x', 'p', [["_d]] .. "normal! ]p", { noremap = true, silent = true })
 vim.keymap.set('x', 'P', [["_d]] .. "normal! [P", { noremap = true, silent = true })
