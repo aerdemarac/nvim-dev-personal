@@ -118,7 +118,7 @@ require("lazy").setup({
       vim.cmd([[colorscheme catppuccin]])
     end,
   },
-
+  })
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -215,8 +215,6 @@ vim.keymap.set(
   ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g3 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic % -o test && exit || read<CR>",
   { silent = false }
 )
-vim.keymap.set("n", "L", vim.lsp.buf.hover, { noremap = true, silent = true })
-
 local function lsp_hover_silent()
     vim.diagnostic.open_float(nil, { focus = false })  -- optional diagnostics
     vim.lsp.buf.hover()                                -- show hover info
@@ -239,5 +237,5 @@ vim.keymap.set("n", "$", "g_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "v$", "vg_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "g$", "$", { desc = "Real end of line" })
 
-vim.keymap.set('x', 'p', [["_d]] .. "normal! ]p", { noremap = true, silent = true })
-vim.keymap.set('x', 'P', [["_d]] .. "normal! [P", { noremap = true, silent = true })
+vim.keymap.set('x', 'p', '"_d]p', { noremap = true, silent = true })
+vim.keymap.set('x', 'P', '"_d[P', { noremap = true, silent = true })
