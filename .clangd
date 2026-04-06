@@ -1,3 +1,54 @@
+# ================================
+# 1. Treat headers as C
+# ================================
+If:
+  PathMatch: [.*\.h]
 CompileFlags:
-  Remove: [-x c++, -std=c++*]
-  Add: [-xc, -std=c99]
+  Add: ["-xc"]
+
+---
+
+# ================================
+# 2. Core Embedded Profile
+# ================================
+CompileFlags:
+  Add:
+    # ---- Language ----
+    - "-std=c99"
+
+    # ---- Core Warnings ----
+    - "-Wall"
+    - "-Wextra"
+
+    # ---- Function Discipline ----
+    - "-Wstrict-prototypes"
+    - "-Wmissing-prototypes"
+    - "-Wold-style-definition"
+
+    # ---- Safety & Correctness ----
+    - "-Wshadow"
+    - "-Wconversion"
+    - "-Wcast-qual"
+    - "-Wcast-align"
+
+    # ---- Embedded-specific pitfalls ----
+    - "-Wdouble-promotion"
+    - "-Wvla"
+
+    # ---- Control flow & enums ----
+    - "-Wswitch-enum"
+
+    # ---- Preprocessor safety ----
+    - "-Wundef"
+
+    # ---- Format string safety ----
+    - "-Wformat=2"
+
+    # ---- Linkage / globals ----
+    - "-fno-common"
+
+    # ---- Standard compliance (not too harsh) ----
+    - "-pedantic"
+
+  Remove:
+    - "-std=*"

@@ -123,9 +123,11 @@ alias test='./test'
 alias cc='gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g3 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic'
 alias app='./app'
 alias cat='batcat -p'
+alias cppcheck='cppcheck --std=c99 --enable=all --inconclusive'
 export WIN=/mnt/c/Users/ProducerDJ/Desktop
 export LUA=~/.config/nvim/init.lua
 export LUA_DIR=~/.config/nvim/
 export REP=~/repos/
 export RC=~/.bashrc
+export CLAN=~/.clangd
 cd && clear

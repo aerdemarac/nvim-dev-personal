@@ -215,6 +215,8 @@ vim.keymap.set(
   ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g3 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic % -o test && exit || read<CR>",
   { silent = false }
 )
+vim.keymap.set("n", "L", vim.lsp.buf.hover, { noremap = true, silent = true })
+
 local function lsp_hover_silent()
     vim.diagnostic.open_float(nil, { focus = false })  -- optional diagnostics
     vim.lsp.buf.hover()                                -- show hover info
@@ -223,9 +225,22 @@ end
 vim.keymap.set("n", "L", lsp_hover_silent, { noremap = true, silent = true })
 vim.cmd([[autocmd VimEnter * :silent! redraw!]])
 vim.keymap.set("n", "<leader>xx", function()
-  vim.diagnostic.setqflist()
-  vim.cmd("copen")
-end, { silent = true })
+  local qf_open = false
+
+  for _, win in ipairs(vim.fn.getwininfo()) do
+    if win.quickfix == 1 then
+      qf_open = true
+      break
+    end
+  end
+
+  if qf_open then
+    vim.cmd("cclose")
+  else
+    vim.diagnostic.setqflist()
+    vim.cmd("copen")
+  end
+end)
 vim.keymap.set("n", "<leader>gi", function()
   require("nvim-tree.api").tree.toggle_gitignore_filter()
 end, { desc = "Toggle GitIgnore Files in NvimTree", silent = true })
