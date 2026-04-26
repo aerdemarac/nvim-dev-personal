@@ -1,5 +1,4 @@
 vim.g.c_syntax_for_h = 1                    -- Treat .h files as C
-vim.g.c_ansi_typedefs = 1                   -- Highlight size_t, atomic_int, etc.
 vim.g.c_ansi_constants = 1                  -- Highlight NULL, EXIT_SUCCESS, etc.
 vim.g.c_gnu = 1                             -- GNU extension highlighting
 vim.g.c_no_curly_error = 1                  -- Stop annoying bracket errors
@@ -105,10 +104,6 @@ require("lazy").setup({
   branch = "main", -- timely updates
   -- branch = "v1.x", -- won't receive breaking changes
   dependencies = { "nvim-tree/nvim-web-devicons", "nvim-lua/plenary.nvim" }, -- optional for icon support
-  keys = {
-    { "K", "<Plug>(CybuPrev)", mode = "n", desc = "Cybu Prev" },
-    { "J", "<Plug>(CybuNext)", mode = "n", desc = "Cybu Next" },
-  },
   opts = {}, -- automatically calls require("cybu").setup()
   },
    {
@@ -208,11 +203,20 @@ require("nvim-tree").setup({
   },
   on_attach = function(bufnr)
     local api = require("nvim-tree.api")
+
     api.config.mappings.default_on_attach(bufnr)
-    vim.keymap.set("n", "<leader>v", api.node.open.vertical, { buffer = bufnr, silent = true })
-    vim.keymap.set("n", "<leader>s", api.node.open.horizontal, { buffer = bufnr, silent = true })
+
+    local opts = { buffer = bufnr, noremap = true, silent = true, nowait = true }
+
+    vim.keymap.set("n", "<leader>v", api.node.open.vertical, opts)
+    vim.keymap.set("n", "<leader>s", api.node.open.horizontal, opts)
+
+    vim.keymap.set("n", "L", "<Cmd>wincmd l<CR>", opts)
+    vim.keymap.set("n", "H", "<Cmd>wincmd h<CR>", opts)
+    vim.keymap.set("n", "<leader>c", api.tree.collapse_all, opts)
   end,
 })
+
 vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>", { silent = true })
 
 vim.keymap.set("n", "S", function()
@@ -223,19 +227,23 @@ vim.keymap.set("n", "<F8>", ":w<CR>:!g++ % -o test<CR>", { silent = true })
 vim.keymap.set(
   "n",
   "<F5>",
-  ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g3 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic % -o test && exit || read<CR>",
+  ":w<CR>:!gcc -fsanitize=address,undefined,leak -fno-omit-frame-pointer -g3 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic-errors % -o test && exit || read<CR>",
   { silent = false }
 )
-vim.keymap.set("n", "L", vim.lsp.buf.hover, { noremap = true, silent = true })
+vim.keymap.set(
+  "n",
+  "<F6>",
+  ":w<CR>:!gcc -g3 -O0 -std=c99 -Wall -Wextra -Wconversion -Wshadow -pedantic-errors % -o test && read<CR>",
+  { silent = false }
+)
 
 local function lsp_hover_silent()
     vim.diagnostic.open_float(nil, { focus = false })  -- optional diagnostics
     vim.lsp.buf.hover()                                -- show hover info
 end
 
-vim.keymap.set("n", "L", lsp_hover_silent, { noremap = true, silent = true })
 vim.cmd([[autocmd VimEnter * :silent! redraw!]])
-vim.keymap.set("n", "<leader>xx", function()
+vim.keymap.set("n", "<leader>x", function()
   local qf_open = false
 
   for _, win in ipairs(vim.fn.getwininfo()) do
@@ -262,3 +270,15 @@ vim.cmd('cnoreabbrev term vsplit \\| term')
 vim.keymap.set("n", "$", "g_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "v$", "vg_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "g$", "$", { desc = "Real end of line" })
+vim.keymap.set("n", "L", "<C-w>l", { silent = true })
+vim.keymap.set("n", "H", "<C-w>h", { silent = true })
+require("cybu").setup({})
+
+vim.keymap.set("n", "K", "<Plug>(CybuPrev)", { silent = true })
+vim.keymap.set("n", "<leader>t", ":NvimTreeToggle<CR>", { silent = true })
+vim.keymap.set("n", "J", "<Plug>(CybuNext)", { silent = true })
+vim.keymap.set("n", "S", lsp_hover_silent, { noremap = true, silent = true })
+vim.keymap.set("n", "X", function()
+  vim.diagnostic.open_float(0, { focus = false })
+end)
+
