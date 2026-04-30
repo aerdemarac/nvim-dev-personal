@@ -163,7 +163,9 @@ vim.keymap.set("n", "<leader>fa", function()
   })
 end)
 vim.keymap.set("n", "<leader>fd", builtin.lsp_document_symbols)
-vim.keymap.set("n", "<leader>ff", builtin.find_files)
+vim.keymap.set("n", "<leader>ff", function()
+  require("telescope.builtin").find_files({ no_ignore = true })
+end)
 vim.keymap.set("n", "<leader>fg", builtin.live_grep)
 vim.keymap.set("n", "<leader>fb", builtin.buffers)
 vim.keymap.set("n", "gd", builtin.lsp_definitions)
@@ -265,7 +267,6 @@ vim.keymap.set("n", "<leader>gi", function()
 end, { desc = "Toggle GitIgnore Files in NvimTree", silent = true })
 
 vim.api.nvim_set_keymap('t', '<Esc>', '<C-\\><C-n>', { noremap = true, silent = true })
-vim.cmd('cnoreabbrev term vsplit \\| term')
 
 vim.keymap.set("n", "$", "g_", { desc = "Last non-blank char" })
 vim.keymap.set("n", "v$", "vg_", { desc = "Last non-blank char" })
@@ -282,3 +283,11 @@ vim.keymap.set("n", "X", function()
   vim.diagnostic.open_float(0, { focus = false })
 end)
 
+vim.keymap.set("n", "<leader>q", function()
+  if vim.bo.modified then
+    vim.notify("Save or discard changes first!", vim.log.levels.WARN)
+    return
+  end
+  vim.cmd("bnext")
+  vim.cmd("bd#")
+end, { silent = true })
