@@ -41,6 +41,12 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
   -- Packer replacement not needed
   {
+    "williamboman/mason.nvim",
+    config = function()
+        require("mason").setup()
+    end,
+  },
+  {
     "neovim/nvim-lspconfig"
   },
   {
@@ -196,6 +202,10 @@ cmp.setup({
   },
 })
 
+lspconfig.basedpyright.setup({
+    filetypes = { "python" },
+})
+
 require("nvim-autopairs").setup({ map_cr = true, map_bs = true, enable_check_bracket_line = false })
 require("cmp").event:on("confirm_done", require("nvim-autopairs.completion.cmp").on_confirm_done())
 
@@ -291,3 +301,5 @@ vim.keymap.set("n", "<leader>q", function()
   vim.cmd("bnext")
   vim.cmd("bd#")
 end, { silent = true })
+vim.api.nvim_set_hl(0, "LineNr", { fg = "#7f849c" })
+vim.api.nvim_set_hl(0, "CursorLineNr", { fg = "#cdd6f4", bold = true })

@@ -10,6 +10,9 @@
 - [x] make / cmake
 - [x] bat
 - [x] lsd
+- [x] bear
+- [x] feh
+- [x] hexedit
 
 # Neovim Custom Keybindings
 
